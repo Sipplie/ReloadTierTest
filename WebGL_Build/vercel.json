@@ -4,28 +4,32 @@
       "source": "/Build/(.*).js.br",
       "headers": [
         { "key": "Content-Encoding", "value": "br" },
-        { "key": "Content-Type", "value": "application/javascript" }
+        { "key": "Content-Type", "value": "application/javascript" },
+        { "key": "Vary", "value": "Accept-Encoding" }
       ]
     },
     {
       "source": "/Build/(.*).wasm.br",
       "headers": [
         { "key": "Content-Encoding", "value": "br" },
-        { "key": "Content-Type", "value": "application/wasm" }
+        { "key": "Content-Type", "value": "application/wasm" },
+        { "key": "Vary", "value": "Accept-Encoding" }
       ]
     },
     {
       "source": "/Build/(.*).data.br",
       "headers": [
         { "key": "Content-Encoding", "value": "br" },
-        { "key": "Content-Type", "value": "application/octet-stream" }
+        { "key": "Content-Type", "value": "application/octet-stream" },
+        { "key": "Vary", "value": "Accept-Encoding" }
       ]
     },
     {
       "source": "/Build/(.*).json.br",
       "headers": [
         { "key": "Content-Encoding", "value": "br" },
-        { "key": "Content-Type", "value": "application/json" }
+        { "key": "Content-Type", "value": "application/json" },
+        { "key": "Vary", "value": "Accept-Encoding" }
       ]
     }
   ]
