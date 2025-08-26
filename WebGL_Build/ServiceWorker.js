@@ -1,9 +1,9 @@
 const cacheName = "DefaultCompany-Reload-4.0.0";
 const contentToCache = [
-    "Build/WegGL_Build_2.loader.js",
-    "Build/WegGL_Build_2.framework.js.unityweb",
-    "Build/WegGL_Build_2.data.unityweb",
-    "Build/WegGL_Build_2.wasm.unityweb",
+    "Build/WebGL_Build.loader.js",
+    "Build/WebGL_Build.framework.js.unityweb",
+    "Build/WebGL_Build.data.unityweb",
+    "Build/WebGL_Build.wasm.unityweb",
     "TemplateData/style.css"
 
 ];
