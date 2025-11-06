@@ -3,40 +3,78 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
+    <base href="/" />
     <title>Unity Web Player | Reload</title>
-  </head>
-  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
-    <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 960px; height: 600px; background: #231F20"></canvas>
-    <script src="Build/aef131a120ede835b131ff59b0142b95.loader.js"></script>
-    <script>
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-
-        var canvas = document.querySelector("#unity-canvas");
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        canvas.style.position = "fixed";
-
-        document.body.style.textAlign = "left";
+    <style>
+      html, body {
+        padding: 0; margin: 0; border: 0;
+        width: 100%; height: 100%;
+        background: #231F20; text-align: center;
       }
+      #unity-canvas {
+        width: 960px; height: 600px; background: #231F20;
+      }
+      @media (pointer: coarse), (max-width: 1024px) {
+        #unity-canvas {
+          width: 100% !important;
+          height: 100% !important;
+          position: fixed; inset: 0;
+        }
+        body { text-align: left; }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
 
+    <!-- Unity loader (с хэшем из твоего билда) -->
+    <script src="/Build/aef131a120ede835b131ff59b0142b95.loader.js"></script>
+
+    <script>
+      // Создание инстанса Unity
       createUnityInstance(document.querySelector("#unity-canvas"), {
         arguments: [],
-        dataUrl: "Build/a549c63297d8cecb63188cb66f2875d0.data.unityweb",
-        frameworkUrl: "Build/73b8dc2ad3ce11036bb10ece06c5274a.framework.js.unityweb",
-        codeUrl: "Build/8b6a61fc01df4530043b4989acd58d26.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
+        dataUrl: "/Build/a549c63297d8cecb63188cb66f2875d0.data.unityweb",
+        frameworkUrl: "/Build/73b8dc2ad3ce11036bb10ece06c5274a.framework.js.unityweb",
+        codeUrl: "/Build/8b6a61fc01df4530043b4989acd58d26.wasm.unityweb",
+        streamingAssetsUrl: "/StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Reload",
-        productVersion: "4.0.0",
-        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
-        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+        productVersion: "4.0.0"
+        // matchWebGLToCanvasSize: false,
+        // devicePixelRatio: 1,
       });
     </script>
-  <script>(async()=>{try{if('serviceWorker'in navigator){const r=await navigator.serviceWorker.getRegistrations();await Promise.all(r.map(x=>x.unregister()))}if(window.caches){const k=await caches.keys();await Promise.all(k.map(c=>caches.delete(c)))}}catch(e){}})();</script>
-</body>
+
+    <!-- Килл-свитч: снять SW, очистить кэши и ОДИН РАЗ перезагрузиться с bust-параметром -->
+    <script>
+      (async () => {
+        try {
+          // 1) Снять все сервис-воркеры в текущем scope
+          if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map(r => r.unregister()));
+          }
+          // 2) Очистить CacheStorage (кэши SW/браузера)
+          if (window.caches) {
+            const keys = await caches.keys();
+            await Promise.all(keys.map(k => caches.delete(k)));
+          }
+          // 3) Один раз перезагрузиться с cache-bust, чтобы подтянуть свежие файлы
+          if (!sessionStorage.getItem('reloadedAfterCacheClear')) {
+            sessionStorage.setItem('reloadedAfterCacheClear', '1');
+            const u = new URL(location.href);
+            u.searchParams.set('v', Date.now().toString());
+            location.replace(u.toString());
+          }
+        } catch (e) {
+          /* no-op */
+        }
+      })();
+    </script>
+  </body>
 </html>
